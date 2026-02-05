@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-transparent text-white; /* Changed to transparent for Electron window */
+    /* PWA Mobile Optimization */
+    overscroll-behavior-y: none;
+    -webkit-user-select: none;
+    user-select: none;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Allow text selection in inputs */
+  input, textarea {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+}
+
+@layer utilities {
+  .draggable {
+    -webkit-app-region: drag;
+  }
+  .no-drag {
+    -webkit-app-region: no-drag;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-surface/50 backdrop-blur-xl border border-white/5 rounded-2xl shadow-xl shadow-purple-900/10;
+  }
+  
+  .glass-sidebar {
+    @apply bg-surface/30 backdrop-blur-2xl border-r border-white/5;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Custom Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+  }
+
+  @keyframes glow-red {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+    }
+    50% {
+      opacity: 0.6;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+    }
+  }
+
+  .animate-glow-red {
+    animation: glow-red 2s infinite ease-in-out;
+  }
+}
