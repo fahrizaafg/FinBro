@@ -96,12 +96,6 @@ export default function Settings() {
           onClose={() => setToast(null)}
         />
       )}
-      {/* Header */}
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">{t.settings.title}</h2>
-        <p className="text-gray-400 mt-1">{t.settings.subtitle}</p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Settings Panel */}
         <div className="lg:col-span-2 space-y-6">

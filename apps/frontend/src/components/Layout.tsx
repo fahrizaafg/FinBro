@@ -269,56 +269,56 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </aside>
 
-        {/* Mobile Header & Navigation */}
-        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1625]/95 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-purple-900/10 transition-all duration-300">
+        {/* Mobile Header (Top) */}
+        <div className="md:hidden fixed top-0 left-0 right-0 z-50 glass-header transition-all duration-300">
           <div className="flex items-center justify-between px-4 py-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-                <span className="font-bold text-white">F</span>
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 ring-1 ring-white/10">
+                <span className="font-bold text-white text-lg">F</span>
               </div>
-              <h1 className="text-lg font-bold tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">FinBro</h1>
+              <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent">FinBro</h1>
             </div>
-            <Link to="/settings" className="p-2 text-gray-400 hover:text-white transition-colors relative">
-              <div className="absolute inset-0 bg-white/5 rounded-full scale-0 active:scale-100 transition-transform" />
-              <Settings size={20} />
-            </Link>
+            <div className="flex items-center gap-2">
+              <NotificationDropdown />
+              <Link to="/settings" className="p-2 text-gray-400 hover:text-white transition-colors relative group">
+                <div className="absolute inset-0 bg-white/5 rounded-full scale-0 group-active:scale-100 transition-transform" />
+                <Settings size={22} />
+              </Link>
+            </div>
           </div>
-          
-          <nav className="flex items-center justify-around px-2 pb-2">
+        </div>
+
+        {/* Mobile Navigation (Bottom) */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-nav pb-safe">
+          <nav className="flex items-center justify-around px-4 py-2">
             {sidebarItems.map((item) => {
               const isActive = location.pathname === item.path;
               return (
                 <Link
                   key={item.label}
                   to={item.path}
-                  className={cn(
-                    "relative flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 min-w-[60px]",
-                    isActive 
-                      ? "text-white" 
-                      : "text-gray-500 hover:text-gray-300"
-                  )}
+                  className="relative flex flex-col items-center gap-1 p-1 transition-all duration-300 min-w-[64px] group"
                 >
                   {isActive && (
-                    <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-xl -z-10 animate-in fade-in zoom-in duration-200" />
+                    <div className="absolute -top-[9px] w-12 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-80" />
                   )}
+                  
                   <div className={cn(
-                    "transition-transform duration-300",
-                    isActive ? "scale-110" : "scale-100"
+                    "relative p-1.5 rounded-2xl transition-all duration-300",
+                    isActive ? "bg-primary/15 -translate-y-1" : "group-active:scale-95"
                   )}>
-                    <item.icon size={20} className={cn(
-                      "transition-colors duration-300",
-                      isActive ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]" : "text-current"
+                    <item.icon size={24} className={cn(
+                      "transition-all duration-300",
+                      isActive ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]" : "text-gray-500"
                     )} />
                   </div>
+                  
                   <span className={cn(
                     "text-[10px] font-medium transition-all duration-300",
                     isActive ? "text-white scale-105" : "text-gray-500"
                   )}>
                     {item.label}
                   </span>
-                  {isActive && (
-                    <div className="absolute -bottom-[9px] w-8 h-1 bg-primary rounded-t-full shadow-[0_-2px_8px_rgba(139,92,246,0.6)]" />
-                  )}
                 </Link>
               );
             })}
@@ -328,7 +328,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/* Main Content Area */}
         <main
           ref={mainRef}
-          className="flex-1 overflow-y-auto overflow-x-hidden md:p-6 p-4 pt-32 pb-6 md:pb-6 relative w-full scroll-smooth"
+          className="flex-1 overflow-y-auto overflow-x-hidden md:p-6 p-4 pt-24 pb-28 md:pb-6 relative w-full scroll-smooth"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -363,7 +363,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <Clock size={12} />
                   <span>{currentTime.toLocaleTimeString(settings.language === 'id' ? 'id-ID' : 'en-US', { hour: '2-digit', minute: '2-digit' })}</span>
                 </div>
-                <NotificationDropdown />
+                <div className="hidden md:block">
+                  <NotificationDropdown />
+                </div>
               </div>
             </header>
 

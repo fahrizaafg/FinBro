@@ -186,11 +186,7 @@ export default function Debts() {
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-10">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">{t.debts.title}</h2>
-          <p className="text-gray-400 mt-1">{t.debts.subtitle}</p>
-        </div>
+      <div className="flex justify-end mb-6">
         <button 
           onClick={() => setIsModalOpen(true)}
           className="px-6 py-3 bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity rounded-xl font-semibold flex items-center gap-2 shadow-lg shadow-primary/20"

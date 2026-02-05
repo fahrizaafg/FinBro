@@ -169,33 +169,61 @@ export default function Transactions() {
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-24 md:pb-10">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">{t.transactions.title}</h2>
-          <p className="text-gray-400 mt-1">{t.transactions.subtitle}</p>
-        </div>
+      <div className="flex md:justify-end mb-6">
         <button 
           onClick={handleOpenModal}
-          className="px-6 py-3 bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity rounded-xl font-semibold flex items-center gap-2 shadow-lg shadow-primary/20 touch-manipulation"
+          className="w-full md:w-auto justify-center px-6 py-3.5 bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-all active:scale-[0.98] rounded-2xl font-bold text-white flex items-center gap-2 shadow-lg shadow-primary/25 hover:shadow-primary/40"
         >
-          <Plus size={20} />
+          <Plus size={20} strokeWidth={2.5} />
           {t.dashboard.addTransaction}
         </button>
       </div>
 
-      {/* Filters */}
-      <div className="glass-card p-4 flex flex-col md:flex-row gap-4 relative z-[100]">
-        <div className="flex-1 relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+      {/* Filters & Search - Mobile Optimized */}
+      <div className="flex flex-col gap-4 relative z-[20] mb-6">
+        <div className="relative w-full">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <input 
             type="text" 
             placeholder={t.transactions.searchPlaceholder}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-black/20 border border-white/5 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
+            className="w-full bg-[#1a1625]/60 backdrop-blur-xl border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-white placeholder:text-gray-500 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all shadow-lg shadow-black/5"
           />
         </div>
-        <div className="flex gap-4">
+        
+        {/* Mobile Filter Chips */}
+        <div className="flex p-1 bg-[#1a1625]/60 backdrop-blur-xl border border-white/10 rounded-2xl md:hidden">
+          {[
+            { id: 'all', label: t.transactions.allCategories },
+            { id: 'income', label: t.transactions.income },
+            { id: 'expense', label: t.transactions.expense }
+          ].map((option) => (
+            <button
+              key={option.id}
+              onClick={() => setFilterType(option.id as 'all' | 'income' | 'expense')}
+              className={cn(
+                "flex-1 py-2.5 text-xs font-bold rounded-xl transition-all duration-300 relative overflow-hidden",
+                filterType === option.id 
+                  ? "text-white shadow-lg" 
+                  : "text-gray-400 hover:text-white"
+              )}
+            >
+              {filterType === option.id && (
+                <div className={cn(
+                  "absolute inset-0 opacity-100 transition-opacity duration-300",
+                  option.id === 'income' ? "bg-gradient-to-r from-green-500 to-emerald-600" :
+                  option.id === 'expense' ? "bg-gradient-to-r from-red-500 to-rose-600" :
+                  "bg-gradient-to-r from-primary to-secondary"
+                )} />
+              )}
+              <span className="relative z-10">{option.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Desktop Filter Dropdown (Hidden on Mobile) */}
+        <div className="hidden md:flex gap-4">
           <div className="relative min-w-[200px]">
             <button 
               onClick={() => setShowFilterDropdown(!showFilterDropdown)}
@@ -242,7 +270,7 @@ export default function Transactions() {
       </div>
 
       {/* Table / List View */}
-      <div className="glass-card overflow-hidden">
+      <div className="md:glass-card md:overflow-hidden bg-transparent">
         {transactions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center animate-fade-in-up">
             <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-6 border border-white/5">
@@ -330,49 +358,63 @@ export default function Transactions() {
               </table>
             </div>
 
-            {/* Mobile Card List View */}
-            <div className="md:hidden flex flex-col divide-y divide-white/5">
-              {filteredTransactions.map((tx) => {
+            {/* Mobile Card List View (Modernized) */}
+            <div className="md:hidden flex flex-col gap-3">
+              {filteredTransactions.map((tx, index) => {
                 const styles = getCategoryStyles(tx.category);
                 const Icon = styles.icon;
                 const date = new Date(tx.date);
                 
                 return (
-                  <div key={tx.id} className="p-4 flex items-center justify-between hover:bg-white/5 active:bg-white/5 transition-colors">
-                    <div className="flex items-center gap-3 overflow-hidden">
-                      <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0", styles.bg, styles.text)}>
-                        <Icon size={18} />
+                  <div 
+                    key={tx.id} 
+                    onClick={() => handleEdit(tx)}
+                    className="group relative overflow-hidden bg-[#1a1625]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-4 active:scale-[0.98] transition-all duration-300 animate-slide-up-fade"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    {/* Background Gradient based on type */}
+                    <div className={cn(
+                      "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500",
+                      tx.type === 'income' 
+                        ? "bg-gradient-to-r from-green-500/5 via-transparent to-transparent" 
+                        : "bg-gradient-to-r from-red-500/5 via-transparent to-transparent"
+                    )} />
+
+                    <div className="relative z-10 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3.5 overflow-hidden flex-1">
+                        <div className={cn(
+                          "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-lg transition-transform duration-300 group-hover:scale-110", 
+                          styles.bg, 
+                          styles.text
+                        )}>
+                          <Icon size={22} strokeWidth={2} />
+                        </div>
+                        <div className="flex flex-col overflow-hidden min-w-0 gap-0.5">
+                          <span className="font-bold text-white text-[15px] truncate leading-tight group-hover:text-primary transition-colors">
+                            {tx.name}
+                          </span>
+                          <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                            <span className={cn("font-medium", styles.text)}>
+                              {getTranslatedCategory(tx.category, settings.language)}
+                            </span>
+                            <span className="w-1 h-1 rounded-full bg-gray-600" />
+                            <span>
+                              {date.toLocaleDateString(settings.language === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short' })}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex flex-col overflow-hidden min-w-0">
-                        <span className="font-semibold text-white text-sm truncate">{tx.name}</span>
-                        <span className="text-xs text-gray-400 flex items-center gap-1">
-                          {getTranslatedCategory(tx.category, settings.language)} • {date.toLocaleDateString(settings.language === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short' })}
+
+                      <div className="flex flex-col items-end gap-0.5 shrink-0">
+                        <span className={cn("font-bold text-base tracking-tight", 
+                          tx.type === 'income' ? "text-green-400" : "text-red-400"
+                        )}>
+                          {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
                         </span>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end gap-1 shrink-0 ml-2">
-                      <span className={cn("font-bold text-sm whitespace-nowrap", 
-                        tx.type === 'income' ? "text-green-400" : "text-red-400"
-                      )}>
-                        {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
-                      </span>
-                      <div className="flex gap-2">
-                         <button 
-                            onClick={() => handleEdit(tx)}
-                            className="p-1.5 bg-white/5 rounded-lg text-gray-400"
-                          >
-                            <Edit size={14} />
-                          </button>
-                          <button 
-                            onClick={() => {
-                              if (confirm(settings.language === 'id' ? 'Hapus transaksi ini?' : 'Delete this transaction?')) {
-                                deleteTransaction(tx.id);
-                              }
-                            }}
-                            className="p-1.5 bg-red-500/10 rounded-lg text-red-400"
-                          >
-                            <Trash2 size={14} />
-                          </button>
+                        <div className="flex items-center gap-1 text-[10px] text-gray-500 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                          <Clock size={10} />
+                          {date.toLocaleTimeString(settings.language === 'id' ? 'id-ID' : 'en-US', { hour: '2-digit', minute: '2-digit' })}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -381,6 +423,7 @@ export default function Transactions() {
             </div>
           </>
         )}
+
 
         {/* Pagination */}
         {transactions.length > 0 && (

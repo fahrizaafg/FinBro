@@ -325,26 +325,14 @@ export default function Categories() {
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-10">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">{t.categories.title}</h2>
-          <p className="text-gray-400 mt-1">{t.categories.subtitle}</p>
-        </div>
-        <div className="flex gap-2">
-          <button 
-            onClick={() => setIsAddModalOpen(true)}
-            className="px-6 py-3 bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity rounded-xl font-semibold flex items-center gap-2 shadow-lg shadow-primary/20"
-          >
-            <Plus size={20} />
-            {t.categories.addCategory}
-          </button>
-          <button 
-            onClick={() => setIsInfoModalOpen(true)}
-            className="px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/5 transition-all rounded-xl font-semibold flex items-center gap-2"
-          >
-            <Info size={20} className="text-primary" />
-          </button>
-        </div>
+      <div className="flex justify-end mb-6">
+        <button 
+          onClick={() => setIsAddModalOpen(true)}
+          className="px-6 py-3 bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity rounded-xl font-semibold flex items-center gap-2 shadow-lg shadow-primary/20"
+        >
+          <Plus size={20} />
+          {t.categories.addCategory}
+        </button>
       </div>
 
       {/* Tabs & Filter */}

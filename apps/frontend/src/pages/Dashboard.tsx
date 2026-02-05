@@ -249,28 +249,36 @@ export default function Dashboard() {
       )}
 
       {/* Top Row: Balance */}
-      <div className="glass-card p-6 md:p-8 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/30 transition-all duration-500" />
+      <div className="glass-card p-6 md:p-8 relative overflow-hidden group border-white/10 shadow-2xl shadow-primary/5">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+        
+        {/* Animated Blobs */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/30 transition-all duration-700" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary/10 rounded-full blur-[60px] translate-y-1/2 -translate-x-1/2 group-hover:bg-secondary/20 transition-all duration-700" />
         
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
             <div className="flex items-center gap-2 text-gray-400 mb-2">
-              <span>{t.dashboard.totalBalance}</span>
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="font-medium tracking-wide text-sm uppercase opacity-80">{t.dashboard.totalBalance}</span>
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">{formatCurrency(balance)}</h2>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 text-green-400 text-sm font-medium border border-green-500/20">
-              <ArrowUpRight size={16} />
-              +0% <span className="text-gray-400 font-normal">{t.dashboard.vsLastMonth}</span>
+            <h2 className="text-4xl md:text-6xl font-bold mb-4 tracking-tighter bg-gradient-to-b from-white to-white/90 bg-clip-text text-transparent">
+              {formatCurrency(balance)}
+            </h2>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 text-green-400 text-xs font-bold border border-green-500/20 shadow-sm backdrop-blur-md">
+              <ArrowUpRight size={14} strokeWidth={3} />
+              +0% <span className="text-gray-400 font-medium">{t.dashboard.vsLastMonth}</span>
             </div>
           </div>
           
           <button 
             onClick={handleOpenModal}
-            className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 touch-manipulation"
+            className="w-full md:w-auto px-6 py-4 bg-gradient-to-r from-primary to-secondary hover:opacity-90 active:scale-[0.98] transition-all duration-200 rounded-2xl font-bold text-white shadow-lg shadow-primary/25 hover:shadow-primary/40 flex items-center justify-center gap-3 group/btn relative overflow-hidden"
           >
-            <Plus size={20} />
-            {t.dashboard.addTransaction}
+            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+            <Plus size={22} strokeWidth={2.5} />
+            <span className="relative">{t.dashboard.addTransaction}</span>
           </button>
         </div>
       </div>
