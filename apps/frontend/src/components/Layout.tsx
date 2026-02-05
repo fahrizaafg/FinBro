@@ -289,7 +289,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Mobile Navigation (Bottom) */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-nav pb-safe">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 glass-nav pb-safe">
           <nav className="flex items-center justify-around px-4 py-2">
             {sidebarItems.map((item) => {
               const isActive = location.pathname === item.path;

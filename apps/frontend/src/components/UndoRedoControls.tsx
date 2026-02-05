@@ -13,7 +13,7 @@ export default function UndoRedoControls() {
     const lastAction = canUndo ? history[history.length - 1].name : null;
     
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+        <div className="fixed bottom-24 md:bottom-6 right-4 md:right-6 z-40 flex flex-col items-end gap-2">
             {/* History Popover */}
             {showHistory && (
                 <div className="mb-2 w-64 glass-card bg-[#1a1625] border border-white/10 rounded-xl overflow-hidden shadow-2xl p-0 animate-fade-in-up">
