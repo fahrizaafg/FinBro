@@ -87,7 +87,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+    <div className="max-w-7xl mx-auto space-y-8 pb-24 md:pb-10">
       {toast && (
         <Toast
           message={toast.message}
@@ -107,7 +107,7 @@ export default function Settings() {
         <div className="lg:col-span-2 space-y-6">
           
           {/* Profile Section */}
-          <div className="glass-card p-8">
+          <div className="glass-card p-6 md:p-8">
             <div className="flex items-center gap-3 mb-2">
               <UserIcon className="text-primary" size={24} />
               <h3 className="text-xl font-bold">{t.settings.profileSettings}</h3>
@@ -132,7 +132,7 @@ export default function Settings() {
             </div>
           </div>
 
-          <div className="glass-card p-8">
+          <div className="glass-card p-6 md:p-8">
             <div className="flex items-center gap-3 mb-2">
               <Globe className="text-primary" size={24} />
               <h3 className="text-xl font-bold">{t.settings.appPreferences}</h3>
@@ -147,7 +147,7 @@ export default function Settings() {
                   <button
                     onClick={() => setLocalLanguage('id')}
                     className={cn(
-                      "flex items-center gap-3 p-4 rounded-xl border transition-all relative overflow-hidden",
+                      "flex items-center gap-3 p-4 rounded-xl border transition-all relative overflow-hidden touch-manipulation",
                       localLanguage === 'id' 
                         ? "bg-primary/10 border-primary text-white" 
                         : "bg-white/5 border-white/5 text-gray-400 hover:bg-white/10"
@@ -162,7 +162,7 @@ export default function Settings() {
                   <button
                     onClick={() => setLocalLanguage('en')}
                     className={cn(
-                      "flex items-center gap-3 p-4 rounded-xl border transition-all relative overflow-hidden",
+                      "flex items-center gap-3 p-4 rounded-xl border transition-all relative overflow-hidden touch-manipulation",
                       localLanguage === 'en' 
                         ? "bg-primary/10 border-primary text-white" 
                         : "bg-white/5 border-white/5 text-gray-400 hover:bg-white/10"
@@ -190,7 +190,7 @@ export default function Settings() {
                   <button
                     disabled
                     className={cn(
-                      "flex items-center gap-3 p-4 rounded-xl border transition-all relative overflow-hidden",
+                      "flex items-center gap-3 p-4 rounded-xl border transition-all relative overflow-hidden touch-manipulation",
                       localCurrency === 'IDR' 
                         ? "bg-primary/10 border-primary text-white" 
                         : "bg-white/5 border-white/5 text-gray-400"
@@ -208,7 +208,7 @@ export default function Settings() {
                   <button
                     disabled
                     className={cn(
-                      "flex items-center gap-3 p-4 rounded-xl border transition-all relative overflow-hidden",
+                      "flex items-center gap-3 p-4 rounded-xl border transition-all relative overflow-hidden touch-manipulation",
                       localCurrency === 'USD' 
                         ? "bg-primary/10 border-primary text-white" 
                         : "bg-white/5 border-white/5 text-gray-400"
@@ -229,7 +229,7 @@ export default function Settings() {
             <div className="mt-8 flex justify-end">
               <button 
                 onClick={handleSave}
-                className="px-6 py-3 bg-primary hover:bg-primary/90 transition-colors rounded-xl font-semibold flex items-center gap-2 shadow-lg shadow-primary/20"
+                className="px-6 py-3 bg-primary hover:bg-primary/90 transition-colors rounded-xl font-semibold flex items-center gap-2 shadow-lg shadow-primary/20 touch-manipulation"
               >
                 <Save size={18} />
                 {t.settings.save}
@@ -238,7 +238,7 @@ export default function Settings() {
           </div>
 
           {/* Data Management */}
-          <div className="glass-card p-8">
+          <div className="glass-card p-6 md:p-8">
             <div className="flex items-center gap-3 mb-2">
               <Save className="text-primary" size={24} />
               <h3 className="text-xl font-bold">{t.settings.dataManagement}</h3>
@@ -248,7 +248,7 @@ export default function Settings() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button 
                 onClick={handleExport}
-                className="flex items-center justify-center gap-3 p-4 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all text-white"
+                className="flex items-center justify-center gap-3 p-4 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all text-white touch-manipulation"
               >
                 <Download size={20} />
                 <span className="font-medium">{t.settings.exportJson}</span>
@@ -256,7 +256,7 @@ export default function Settings() {
               
               <button 
                 onClick={() => fileInputRef.current?.click()}
-                className="flex items-center justify-center gap-3 p-4 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all text-white"
+                className="flex items-center justify-center gap-3 p-4 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all text-white touch-manipulation"
               >
                 <Upload size={20} />
                 <span className="font-medium">{t.settings.importJson}</span>
@@ -275,7 +275,7 @@ export default function Settings() {
         {/* Sidebar Info */}
         <div className="space-y-6">
           {/* About Card */}
-          <div className="glass-card p-8 text-center relative overflow-hidden">
+          <div className="glass-card p-6 md:p-8 text-center relative overflow-hidden">
              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary" />
              
              <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/20">

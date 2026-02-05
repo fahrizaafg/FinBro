@@ -3,10 +3,13 @@
 @tailwind utilities;
 
 @layer base {
+  html, body {
+    overflow-x: hidden;
+  }
+  
   body {
     @apply bg-transparent text-white; /* Changed to transparent for Electron window */
     /* PWA Mobile Optimization */
-    overscroll-behavior-y: none;
     -webkit-user-select: none;
     user-select: none;
     padding-bottom: env(safe-area-inset-bottom);
@@ -35,6 +38,15 @@
   
   .glass-sidebar {
     @apply bg-surface/30 backdrop-blur-2xl border-r border-white/5;
+  }
+
+  /* Safe Area Utilities for Mobile */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
   }
 
   .scrollbar-hide {

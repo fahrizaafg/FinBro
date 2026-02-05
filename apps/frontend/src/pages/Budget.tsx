@@ -145,7 +145,7 @@ export default function Budget() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-10 relative">
+    <div className="max-w-7xl mx-auto space-y-8 pb-24 md:pb-10 relative">
       {/* Overbudget Alert */}
       {totalSpent > totalBudget && (
         <div className="w-full">
@@ -177,19 +177,19 @@ export default function Budget() {
                     placeholder={t.transactions.searchPlaceholder}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-black/20 border border-white/5 rounded-lg py-2 pl-10 pr-4 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
+                    className="w-full bg-black/20 border border-white/5 rounded-lg py-3 pl-10 pr-4 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
                 />
             </div>
         </div>
       </div>
 
       {/* Date & Add Button */}
-      <div className="flex justify-end gap-4">
+      <div className="flex flex-col sm:flex-row justify-end gap-4">
         {/* Month Selector */}
-        <div className="flex items-center bg-white/5 border border-white/5 rounded-lg p-1">
+        <div className="flex items-center justify-between sm:justify-start bg-white/5 border border-white/5 rounded-lg p-1">
             <button 
                 onClick={handlePrevMonth} 
-                className="p-2 hover:bg-white/10 rounded-md text-gray-400 hover:text-white transition-colors"
+                className="p-3 hover:bg-white/10 rounded-md text-gray-400 hover:text-white transition-colors"
             >
                 <ChevronLeft size={16} />
             </button>
@@ -199,7 +199,7 @@ export default function Budget() {
             </div>
             <button 
                 onClick={handleNextMonth} 
-                className="p-2 hover:bg-white/10 rounded-md text-gray-400 hover:text-white transition-colors"
+                className="p-3 hover:bg-white/10 rounded-md text-gray-400 hover:text-white transition-colors"
             >
                 <ChevronRight size={16} />
             </button>
@@ -207,7 +207,7 @@ export default function Budget() {
 
         <button 
           onClick={handleOpenModal}
-          className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-primary/20"
+          className="flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary/90 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-primary/20"
         >
             <Plus size={16} />
             {t.budget.addBudget}
@@ -215,9 +215,9 @@ export default function Budget() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         {/* Total Budget */}
-        <div className="glass-card p-6 relative overflow-hidden group">
+        <div className="glass-card p-4 md:p-6 relative overflow-hidden group">
             <div className="flex justify-between items-start mb-4">
                 <p className="text-gray-400 text-sm">{t.budget.totalBudget}</p>
                 <div className="flex gap-2">
@@ -281,7 +281,7 @@ export default function Budget() {
         </div>
 
         {/* Total Spent */}
-        <div className={cn("glass-card p-6 relative overflow-hidden transition-all", totalSpent > totalBudget && "border-red-500/50 bg-red-500/10 shadow-[0_0_30px_rgba(239,68,68,0.2)]")}>
+        <div className={cn("glass-card p-4 md:p-6 relative overflow-hidden transition-all", totalSpent > totalBudget && "border-red-500/50 bg-red-500/10 shadow-[0_0_30px_rgba(239,68,68,0.2)]")}>
             <div className="flex justify-between items-start mb-4">
                 <p className="text-gray-400 text-sm">{t.budget.spending}</p>
                 <CreditCard className="text-gray-500" size={24} />
@@ -303,7 +303,7 @@ export default function Budget() {
         </div>
 
         {/* Remaining */}
-        <div className="glass-card p-6 relative overflow-hidden">
+        <div className="glass-card p-4 md:p-6 relative overflow-hidden">
             <div className="flex justify-between items-start mb-4">
                 <p className="text-gray-400 text-sm">{t.budget.remaining}</p>
                 <PiggyBank className="text-gray-500" size={24} />
@@ -333,13 +333,13 @@ export default function Budget() {
           <p className="text-gray-400 font-medium">{t.budget.emptyState.subtitle}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 animate-fade-in-up">
           {budgetsWithUsage.map((budget) => {
               const styles = getCategoryStyles(budget.category);
               const Icon = styles.icon;
               
               return (
-                  <div key={budget.id} className={cn("glass-card p-6 relative group border border-white/5 transition-all hover:border-primary/20", budget.isOverbudget && "border-red-500/50 bg-red-500/10 shadow-[0_0_30px_rgba(239,68,68,0.2)]")}>
+                  <div key={budget.id} className={cn("glass-card p-4 md:p-6 relative group border border-white/5 transition-all hover:border-primary/20", budget.isOverbudget && "border-red-500/50 bg-red-500/10 shadow-[0_0_30px_rgba(239,68,68,0.2)]")}>
                       <div className="flex justify-between items-start mb-6">
                           <div className="flex items-center gap-3">
                               <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 text-primary", budget.isOverbudget && "bg-red-500/10 text-red-400", styles.color, styles.bg)}>
@@ -429,7 +429,7 @@ export default function Budget() {
                           key={cat}
                           type="button"
                           onClick={() => setNewBudget({...newBudget, category: cat})}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+                          className={`px-3 py-2.5 rounded-lg text-xs font-medium border transition-all touch-manipulation ${
                             newBudget.category === cat
                               ? 'bg-primary/20 border-primary/50 text-primary'
                               : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
@@ -446,7 +446,7 @@ export default function Budget() {
                     type="text"  
                     value={newBudget.category}
                     onChange={e => setNewBudget({...newBudget, category: e.target.value})}
-                    className="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-white focus:outline-none focus:border-primary/50"
+                    className="w-full bg-black/20 border border-white/5 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-primary/50"
                     placeholder="cth. Makanan"
                     required
                     disabled={!!editingId} // Disable category edit when updating

@@ -9,10 +9,11 @@ import {
   Folder,
   Clock,
   LogOut,
-  Maximize
+  Maximize,
+  ArrowLeft
 } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { translations } from '../lib/translations';
 import UndoRedoControls from './UndoRedoControls';
@@ -21,10 +22,18 @@ import TitleBar from './TitleBar';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, settings } = useApp();
   const t = translations[settings.language];
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showTopShadow, setShowTopShadow] = useState(false);
+  const [showBottomShadow, setShowBottomShadow] = useState(false);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const [swipeProgress, setSwipeProgress] = useState(0);
+  const [startX, setStartX] = useState<number | null>(null);
+  const [startY, setStartY] = useState<number | null>(null);
+  const mainRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -73,7 +82,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const getAvatarSrc = (user: any) => {
+  const getAvatarSrc = (user: { name?: string; avatar?: string } | null) => {
     if (user?.avatar && typeof user.avatar === 'string') {
       return user.avatar;
     }
@@ -82,6 +91,55 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'User'}`;
+  };
+
+  useEffect(() => {
+    const el = mainRef.current;
+    if (!el) return;
+    const updateShadows = () => {
+      const maxScroll = el.scrollHeight - el.clientHeight;
+      setShowTopShadow(el.scrollTop > 2);
+      setShowBottomShadow(el.scrollTop < maxScroll - 2);
+    };
+    updateShadows();
+    el.addEventListener('scroll', updateShadows, { passive: true });
+    return () => el.removeEventListener('scroll', updateShadows);
+  }, []);
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    const touch = e.touches[0];
+    if (touch.clientX < 24) {
+      setStartX(touch.clientX);
+      setStartY(touch.clientY);
+      setIsSwiping(true);
+      setSwipeProgress(0);
+    } else {
+      setIsSwiping(false);
+      setStartX(null);
+      setStartY(null);
+      setSwipeProgress(0);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isSwiping || startX === null || startY === null) return;
+    const touch = e.touches[0];
+    const dx = touch.clientX - startX;
+    const dy = Math.abs(touch.clientY - startY);
+    if (dx > 0 && dy < 60) {
+      const progress = Math.min(1, dx / 120);
+      setSwipeProgress(progress);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (isSwiping && swipeProgress > 0.7) {
+      navigate(-1);
+    }
+    setIsSwiping(false);
+    setSwipeProgress(0);
+    setStartX(null);
+    setStartY(null);
   };
 
   const sidebarItems = [
@@ -104,11 +162,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full bg-background backdrop-blur-[12px] text-white overflow-hidden font-sans selection:bg-primary/30 rounded-lg border border-[#4B0080]/30 shadow-[0_0_20px_rgba(75,0,128,0.5)]">
-      <TitleBar />
-      <div className="flex flex-1 overflow-hidden w-full relative">
-        {/* Sidebar */}
-        <aside className="w-64 glass-sidebar flex flex-col p-6 relative z-20 bg-transparent border-r-0">
+    <div className="flex flex-col min-h-screen w-full bg-background backdrop-blur-[12px] text-white font-sans selection:bg-primary/30 md:rounded-lg md:border md:border-[#4B0080]/30 md:shadow-[0_0_20px_rgba(75,0,128,0.5)] md:h-screen md:overflow-hidden">
+      <div className="hidden md:block">
+        <TitleBar />
+      </div>
+      <div className="flex flex-1 w-full relative md:overflow-hidden">
+        {/* Sidebar - Desktop Only */}
+        <aside className="hidden md:flex w-64 glass-sidebar flex-col p-6 relative z-20 bg-transparent border-r-0">
           <div className="flex items-center gap-3 mb-10 px-2">
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
               <span className="font-bold text-white">F</span>
@@ -202,64 +262,113 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 />
               </div>
               <div className="overflow-hidden">
-                <p className="text-sm font-semibold truncate">{user?.name || t.common.guest}</p>
+                <p className="font-bold truncate text-sm">{user?.name || 'User'}</p>
+                <p className="text-xs text-gray-400 truncate">Pro Plan</p>
               </div>
             </div>
           </div>
         </aside>
 
-        {/* Main Content */}
-        <main className="flex-1 flex flex-col relative overflow-hidden bg-transparent">
-          {/* Header */}
-          <header className="h-20 border-b border-white/5 bg-transparent flex items-center justify-between px-8 z-10 sticky top-0">
-            <div className="flex flex-col">
-              <h2 className="text-xl font-bold tracking-tight">{getPageTitle()}</h2>
-              <div className="flex items-center gap-4 text-xs text-gray-400">
-                <div className="flex items-center gap-2">
-                  <Calendar size={12} />
-                  <span>{currentTime.toLocaleDateString(settings.language === 'id' ? 'id-ID' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                </div>
-                <div className="flex items-center gap-2 pl-4 border-l border-white/10">
-                  <Clock size={12} />
-                  <span className="tabular-nums font-medium">
-                    {currentTime.toLocaleTimeString(settings.language === 'id' ? 'id-ID' : 'en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZoneName: 'short' })}
-                  </span>
-                </div>
+        {/* Mobile Header & Navigation */}
+        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#1a1625]/95 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-purple-900/10 transition-all duration-300">
+          <div className="flex items-center justify-between px-4 py-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
+                <span className="font-bold text-white">F</span>
               </div>
+              <h1 className="text-lg font-bold tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">FinBro</h1>
             </div>
-
-            <div className="flex items-center gap-4">
-              <NotificationDropdown />
-              <div className="flex items-center gap-3 pl-4 border-l border-white/5">
-                <div className="text-right hidden sm:block">
-                  <p className="text-sm font-medium">{user?.name || t.common.user}</p>
-                  <p className="text-xs text-gray-400">{t.sidebar.welcomeBack}</p>
-                </div>
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-purple-500 p-[2px]">
-                  {user?.avatar || user?.name ? (
-                    <img 
-                      src={getAvatarSrc(user)} 
-                      onError={handleImageError}
-                      alt={t.common.profile} 
-                      className="w-full h-full object-cover rounded-[10px]" 
-                    />
-                  ) : (
-                    <div className="w-full h-full rounded-[10px] bg-background flex items-center justify-center">
-                      <span className="font-bold text-primary">{user?.name?.charAt(0) || 'U'}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </header>
-
-          {/* Scrollable Content */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
-            <div className="max-w-7xl mx-auto pb-20">
-              {children}
-            </div>
+            <Link to="/settings" className="p-2 text-gray-400 hover:text-white transition-colors relative">
+              <div className="absolute inset-0 bg-white/5 rounded-full scale-0 active:scale-100 transition-transform" />
+              <Settings size={20} />
+            </Link>
           </div>
           
+          <nav className="flex items-center justify-around px-2 pb-2">
+            {sidebarItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.label}
+                  to={item.path}
+                  className={cn(
+                    "relative flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-300 min-w-[60px]",
+                    isActive 
+                      ? "text-white" 
+                      : "text-gray-500 hover:text-gray-300"
+                  )}
+                >
+                  {isActive && (
+                    <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-xl -z-10 animate-in fade-in zoom-in duration-200" />
+                  )}
+                  <div className={cn(
+                    "transition-transform duration-300",
+                    isActive ? "scale-110" : "scale-100"
+                  )}>
+                    <item.icon size={20} className={cn(
+                      "transition-colors duration-300",
+                      isActive ? "text-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]" : "text-current"
+                    )} />
+                  </div>
+                  <span className={cn(
+                    "text-[10px] font-medium transition-all duration-300",
+                    isActive ? "text-white scale-105" : "text-gray-500"
+                  )}>
+                    {item.label}
+                  </span>
+                  {isActive && (
+                    <div className="absolute -bottom-[9px] w-8 h-1 bg-primary rounded-t-full shadow-[0_-2px_8px_rgba(139,92,246,0.6)]" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Main Content Area */}
+        <main
+          ref={mainRef}
+          className="flex-1 overflow-y-auto overflow-x-hidden md:p-6 p-4 pt-32 pb-6 md:pb-6 relative w-full scroll-smooth"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="pointer-events-none absolute inset-0">
+            {showTopShadow && <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-black/25 to-transparent" />}
+            {showBottomShadow && <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-black/25 to-transparent" />}
+            {isSwiping && (
+              <div className="absolute top-1/2 -translate-y-1/2 left-2 flex items-center gap-2 text-white/80">
+                <div className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+                  <ArrowLeft size={18} />
+                </div>
+                <div className="w-24 h-1 bg-white/15 rounded-full overflow-hidden">
+                  <div className="h-full bg-primary" style={{ width: `${swipeProgress * 100}%` }} />
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="max-w-7xl mx-auto w-full relative z-10">
+            {/* Header / Title Bar for Mobile Context */}
+            <header className="flex justify-between items-center mb-6 md:mb-8">
+              <div className="flex flex-col">
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white">{getPageTitle()}</h2>
+                <div className="flex items-center gap-2 text-gray-400 text-xs md:text-sm mt-1">
+                  <Calendar size={14} />
+                  <span>{currentTime.toLocaleDateString(settings.language === 'id' ? 'id-ID' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-full border border-white/5 text-xs font-mono text-gray-400">
+                  <Clock size={12} />
+                  <span>{currentTime.toLocaleTimeString(settings.language === 'id' ? 'id-ID' : 'en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                </div>
+                <NotificationDropdown />
+              </div>
+            </header>
+
+            {children}
+          </div>
           <UndoRedoControls />
         </main>
       </div>

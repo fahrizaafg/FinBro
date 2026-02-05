@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Plus, ArrowUpRight, X, ChevronDown, AlertTriangle, Trash, PiggyBank, MoreHorizontal, Ghost, Calendar, Clock } from 'lucide-react';
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useApp } from '../context/AppContext';
-import { getCategoryStyles, getTranslatedCategory } from '../lib/utils';
+import { getCategoryStyles, getTranslatedCategory, cn } from '../lib/utils';
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { translations } from '../lib/translations';
 
@@ -225,7 +225,7 @@ export default function Dashboard() {
   const budgetProgress = totalBudget > 0 ? Math.min((totalSpent / totalBudget) * 100, 100) : 0;
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-10">
+    <div className="space-y-6 max-w-7xl mx-auto pb-24 md:pb-10">
       {/* Budget Warning Notification */}
       {totalSpent > totalBudget && totalBudget > 0 && (
         <div className="w-full animate-fade-in-up">
@@ -249,7 +249,7 @@ export default function Dashboard() {
       )}
 
       {/* Top Row: Balance */}
-      <div className="glass-card p-8 relative overflow-hidden group">
+      <div className="glass-card p-6 md:p-8 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/30 transition-all duration-500" />
         
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -258,7 +258,7 @@ export default function Dashboard() {
               <span>{t.dashboard.totalBalance}</span>
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
             </div>
-            <h2 className="text-5xl font-bold mb-4 tracking-tight">{formatCurrency(balance)}</h2>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">{formatCurrency(balance)}</h2>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 text-green-400 text-sm font-medium border border-green-500/20">
               <ArrowUpRight size={16} />
               +0% <span className="text-gray-400 font-normal">{t.dashboard.vsLastMonth}</span>
@@ -267,7 +267,7 @@ export default function Dashboard() {
           
           <button 
             onClick={handleOpenModal}
-            className="px-6 py-3 bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity rounded-xl font-semibold flex items-center gap-2 shadow-lg shadow-primary/20"
+            className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 touch-manipulation"
           >
             <Plus size={20} />
             {t.dashboard.addTransaction}
@@ -295,7 +295,7 @@ export default function Dashboard() {
                   type="text" 
                   value={formData.name}
                   onChange={e => setFormData({...formData, name: e.target.value})}
-                  className="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-white focus:outline-none focus:border-primary/50"
+                  className="w-full bg-black/20 border border-white/5 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-primary/50"
                   placeholder={t.dashboard.modal.namePlaceholder}
                   required
                 />
@@ -335,7 +335,7 @@ export default function Dashboard() {
                     type="text" 
                     value={formData.amount}
                     onChange={handleAmountChange}
-                    className="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-white focus:outline-none focus:border-primary/50"
+                    className="w-full bg-black/20 border border-white/5 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-primary/50"
                     placeholder={t.dashboard.modal.amountPlaceholder}
                     required
                   />
@@ -355,7 +355,7 @@ export default function Dashboard() {
                         setFormData({...formData, category: getTranslatedCategory(cat, settings.language)});
                         setShowCategoryDropdown(false);
                       }}
-                      className={`px-2 py-1 rounded-xl text-xs font-medium transition-all border h-10 flex items-center justify-center text-center ${
+                      className={`px-2 py-1 rounded-xl text-xs font-medium transition-all border h-12 flex items-center justify-center text-center touch-manipulation ${
                         formData.category === cat || formData.category === getTranslatedCategory(cat, settings.language)
                           ? formData.type === 'income'
                             ? 'bg-green-500/20 border-green-500 text-green-400 shadow-[0_0_10px_rgba(34,197,94,0.3)]'
@@ -369,7 +369,7 @@ export default function Dashboard() {
                   <button
                     type="button"
                     onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                    className="px-2 py-1 rounded-xl text-xs font-medium transition-all border bg-white/5 border-white/5 text-gray-400 hover:bg-white/10 hover:text-white h-10 flex items-center justify-center text-center"
+                    className="px-2 py-1 rounded-xl text-xs font-medium transition-all border bg-white/5 border-white/5 text-gray-400 hover:bg-white/10 hover:text-white h-12 flex items-center justify-center text-center touch-manipulation"
                   >
                     {t.dashboard.modal.other} <ChevronDown size={12} className="ml-1" />
                   </button>
@@ -388,7 +388,7 @@ export default function Dashboard() {
                         setShowCategoryDropdown(true);
                       }}
                       onFocus={() => setShowCategoryDropdown(true)}
-                      className="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 pr-10 text-white focus:outline-none focus:border-primary/50 text-sm"
+                      className="w-full bg-black/20 border border-white/5 rounded-xl py-3 px-4 pr-10 text-white focus:outline-none focus:border-primary/50 text-sm"
                       placeholder={t.dashboard.modal.categoryPlaceholder}
                       required
                     />
@@ -446,7 +446,7 @@ export default function Dashboard() {
                   type="text" 
                   value={formData.desc}
                   onChange={e => setFormData({...formData, desc: e.target.value})}
-                  className="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-white focus:outline-none focus:border-primary/50"
+                  className="w-full bg-black/20 border border-white/5 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-primary/50"
                   placeholder={t.dashboard.modal.descPlaceholder}
                 />
               </div>
@@ -460,7 +460,7 @@ export default function Dashboard() {
                     setFormData({...formData, date: e.target.value});
                     setIsDateManuallyEdited(true);
                   }}
-                  className="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-white focus:outline-none focus:border-primary/50 [color-scheme:dark]"
+                  className="w-full bg-black/20 border border-white/5 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-primary/50 [color-scheme:dark]"
                   required
                 />
               </div>
@@ -571,9 +571,9 @@ export default function Dashboard() {
       )}
 
       {/* Middle Row: Budget & Chart */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Monthly Budget */}
-        <div className="glass-card p-6 flex flex-col justify-between h-[300px]">
+        <div className="glass-card p-4 md:p-6 flex flex-col justify-between h-[280px] md:h-[300px]">
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center text-secondary">
@@ -584,7 +584,7 @@ export default function Dashboard() {
             <div className="relative">
               <button 
                 onClick={() => setShowBudgetMenu(!showBudgetMenu)}
-                className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/5 transition-colors"
+                className="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-white/5 transition-colors touch-manipulation"
               >
                 <MoreHorizontal size={20} />
               </button>
@@ -598,13 +598,13 @@ export default function Dashboard() {
                   <div className="absolute right-0 top-full mt-2 w-48 bg-[#1a1625] border border-white/10 rounded-xl shadow-xl z-20 overflow-hidden animate-fade-in">
                     <button
                       onClick={() => navigate('/budget')}
-                      className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
+                      className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors touch-manipulation"
                     >
                       View Details
                     </button>
                     <button
                       onClick={handleOpenGlobalBudgetModal}
-                      className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors border-t border-white/5"
+                      className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors border-t border-white/5 touch-manipulation"
                     >
                       {t.dashboard.modal.editBudget}
                     </button>
@@ -613,7 +613,7 @@ export default function Dashboard() {
                         setShowBudgetMenu(false);
                         setIsBudgetModalOpen(true);
                       }}
-                      className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors border-t border-white/5"
+                      className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors border-t border-white/5 touch-manipulation"
                     >
                       Manage Categories
                     </button>
@@ -645,7 +645,7 @@ export default function Dashboard() {
         </div>
 
         {/* Weekly Spending Chart */}
-        <div className="glass-card p-6 lg:col-span-2 h-[300px] flex flex-col">
+        <div className="glass-card p-4 md:p-6 lg:col-span-2 h-[280px] md:h-[300px] flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
@@ -658,7 +658,7 @@ export default function Dashboard() {
             <div className="relative">
               <button 
                 onClick={() => setShowChartRangeDropdown(!showChartRangeDropdown)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 text-sm text-gray-300 border border-white/5 hover:bg-white/10 hover:text-white transition-all"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 text-sm text-gray-300 border border-white/5 hover:bg-white/10 hover:text-white transition-all touch-manipulation"
               >
                 {chartRange === '7days' ? t.dashboard.last7Days : t.dashboard.last30Days}
                 <ChevronDown size={14} className={`transition-transform duration-300 ${showChartRangeDropdown ? 'rotate-180' : ''}`} />
@@ -676,7 +676,7 @@ export default function Dashboard() {
                         setChartRange('7days');
                         setShowChartRangeDropdown(false);
                       }}
-                      className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                      className={`w-full text-left px-4 py-3 text-sm transition-colors touch-manipulation ${
                         chartRange === '7days' ? 'bg-primary/20 text-primary' : 'text-gray-300 hover:bg-white/5 hover:text-white'
                       }`}
                     >
@@ -687,7 +687,7 @@ export default function Dashboard() {
                         setChartRange('30days');
                         setShowChartRangeDropdown(false);
                       }}
-                      className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                      className={`w-full text-left px-4 py-3 text-sm transition-colors touch-manipulation ${
                         chartRange === '30days' ? 'bg-primary/20 text-primary' : 'text-gray-300 hover:bg-white/5 hover:text-white'
                       }`}
                     >
@@ -736,10 +736,10 @@ export default function Dashboard() {
       </div>
 
       {/* Recent Transactions */}
-      <div className="glass-card p-6">
+      <div className="glass-card p-4 md:p-6">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-semibold text-lg">{t.dashboard.recentTransactions}</h3>
-          <Link to="/transactions" className="text-primary hover:text-primary/80 text-sm font-medium transition-colors">
+          <Link to="/transactions" className="text-primary hover:text-primary/80 text-sm font-medium transition-colors touch-manipulation p-2 -mr-2">
             {t.dashboard.viewAll}
           </Link>
         </div>
@@ -753,57 +753,92 @@ export default function Dashboard() {
               <p className="text-gray-400 font-medium">{t.dashboard.emptyState.title}, {t.dashboard.emptyState.subtitle}</p>
             </div>
           ) : (
-            <table className="w-full">
-              <thead>
-                <tr className="text-left text-gray-400 text-sm border-b border-white/5">
-                  <th className="pb-4 font-medium pl-2">{t.transactions.table.desc}</th>
-                  <th className="pb-4 font-medium">{t.transactions.table.category}</th>
-                  <th className="pb-4 font-medium">{t.transactions.table.date}</th>
-                  <th className="pb-4 font-medium text-right pr-2">{t.transactions.table.amount}</th>
-                </tr>
-              </thead>
-              <tbody className="space-y-4">
+            <>
+              {/* Desktop Table View */}
+              <table className="w-full hidden md:table">
+                <thead>
+                  <tr className="text-left text-gray-400 text-sm border-b border-white/5">
+                    <th className="pb-4 font-medium pl-2">{t.transactions.table.desc}</th>
+                    <th className="pb-4 font-medium">{t.transactions.table.category}</th>
+                    <th className="pb-4 font-medium">{t.transactions.table.date}</th>
+                    <th className="pb-4 font-medium text-right pr-2">{t.transactions.table.amount}</th>
+                  </tr>
+                </thead>
+                <tbody className="space-y-4">
+                  {transactions.slice(0, 5).map((tx) => {
+                    const date = new Date(tx.date);
+                    const { icon: Icon, bg, text } = getCategoryStyles(tx.category);
+                    return (
+                      <tr key={tx.id} className="group hover:bg-white/5 transition-colors rounded-lg">
+                        <td className="py-4 pl-2">
+                          <div className="flex items-center gap-4">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${bg} ${text}`}>
+                              <Icon size={20} />
+                            </div>
+                            <div>
+                              <p className="font-semibold">{tx.name}</p>
+                              <p className="text-xs text-gray-400">{tx.desc}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4">
+                          <span className="px-3 py-1 rounded-full bg-white/5 text-xs font-medium border border-white/5">
+                            {getTranslatedCategory(tx.category, settings.language)}
+                          </span>
+                        </td>
+                        <td className="py-4 text-gray-400 text-sm">
+                          <div className="flex flex-col">
+                            <span className="flex items-center gap-1.5 text-sm font-medium">
+                              <Calendar size={14} className="text-gray-500" />
+                              {date.toLocaleDateString(settings.language === 'id' ? 'id-ID' : 'en-US', { weekday: 'long', day: 'numeric', month: 'short' })}
+                            </span>
+                            <span className="flex items-center gap-1.5 text-xs text-gray-500 mt-1">
+                              <Clock size={14} />
+                              {date.toLocaleTimeString(settings.language === 'id' ? 'id-ID' : 'en-US', { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                          </div>
+                        </td>
+                        <td className={`py-4 text-right font-semibold pr-2 ${tx.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
+                          {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+
+              {/* Mobile List View */}
+              <div className="md:hidden flex flex-col divide-y divide-white/5">
                 {transactions.slice(0, 5).map((tx) => {
+                  const styles = getCategoryStyles(tx.category);
+                  const Icon = styles.icon;
                   const date = new Date(tx.date);
-                  const { icon: Icon, bg, text } = getCategoryStyles(tx.category);
+                  
                   return (
-                    <tr key={tx.id} className="group hover:bg-white/5 transition-colors rounded-lg">
-                      <td className="py-4 pl-2">
-                        <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${bg} ${text}`}>
-                            <Icon size={20} />
-                          </div>
-                          <div>
-                            <p className="font-semibold">{tx.name}</p>
-                            <p className="text-xs text-gray-400">{tx.desc}</p>
-                          </div>
+                    <div key={tx.id} className="py-4 flex items-center justify-between hover:bg-white/5 active:bg-white/5 transition-colors">
+                      <div className="flex items-center gap-3 overflow-hidden">
+                        <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0", styles.bg, styles.text)}>
+                          <Icon size={18} />
                         </div>
-                      </td>
-                      <td className="py-4">
-                        <span className="px-3 py-1 rounded-full bg-white/5 text-xs font-medium border border-white/5">
-                          {getTranslatedCategory(tx.category, settings.language)}
+                        <div className="flex flex-col overflow-hidden min-w-0">
+                          <span className="font-semibold text-white text-sm truncate">{tx.name}</span>
+                          <span className="text-xs text-gray-400 flex items-center gap-1">
+                            {getTranslatedCategory(tx.category, settings.language)} • {date.toLocaleDateString(settings.language === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short' })}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-1 shrink-0 ml-2">
+                        <span className={cn("font-bold text-sm whitespace-nowrap", 
+                          tx.type === 'income' ? "text-green-400" : "text-red-400"
+                        )}>
+                          {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
                         </span>
-                      </td>
-                      <td className="py-4 text-gray-400 text-sm">
-                        <div className="flex flex-col">
-                          <span className="flex items-center gap-1.5 text-sm font-medium">
-                            <Calendar size={14} className="text-gray-500" />
-                            {date.toLocaleDateString(settings.language === 'id' ? 'id-ID' : 'en-US', { weekday: 'long', day: 'numeric', month: 'short' })}
-                          </span>
-                          <span className="flex items-center gap-1.5 text-xs text-gray-500 mt-1">
-                            <Clock size={14} />
-                            {date.toLocaleTimeString(settings.language === 'id' ? 'id-ID' : 'en-US', { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                        </div>
-                      </td>
-                      <td className={`py-4 text-right font-semibold pr-2 ${tx.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
-                        {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
-                      </td>
-                    </tr>
+                      </div>
+                    </div>
                   );
                 })}
-              </tbody>
-            </table>
+              </div>
+            </>
           )}
         </div>
       </div>

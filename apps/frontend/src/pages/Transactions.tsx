@@ -167,7 +167,7 @@ export default function Transactions() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+    <div className="max-w-7xl mx-auto space-y-8 pb-24 md:pb-10">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -176,7 +176,7 @@ export default function Transactions() {
         </div>
         <button 
           onClick={handleOpenModal}
-          className="px-6 py-3 bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity rounded-xl font-semibold flex items-center gap-2 shadow-lg shadow-primary/20"
+          className="px-6 py-3 bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity rounded-xl font-semibold flex items-center gap-2 shadow-lg shadow-primary/20 touch-manipulation"
         >
           <Plus size={20} />
           {t.dashboard.addTransaction}
@@ -199,7 +199,7 @@ export default function Transactions() {
           <div className="relative min-w-[200px]">
             <button 
               onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-              className="w-full flex items-center justify-between bg-black/20 border border-white/5 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full flex items-center justify-between bg-black/20 border border-white/5 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-primary/50 transition-colors touch-manipulation"
             >
               <span>
                 {filterType === 'all' && t.transactions.allCategories}
@@ -227,7 +227,7 @@ export default function Transactions() {
                         setFilterType(option.id as 'all' | 'income' | 'expense');
                         setShowFilterDropdown(false);
                       }}
-                      className={`w-full text-left px-4 py-3 text-sm transition-colors ${
+                      className={`w-full text-left px-4 py-3 text-sm transition-colors touch-manipulation ${
                         filterType === option.id ? 'bg-primary/20 text-primary' : 'text-gray-300 hover:bg-white/5 hover:text-white'
                       }`}
                     >
@@ -241,7 +241,7 @@ export default function Transactions() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table / List View */}
       <div className="glass-card overflow-hidden">
         {transactions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center animate-fade-in-up">
@@ -252,78 +252,134 @@ export default function Transactions() {
             <p className="text-gray-400 font-medium">{t.dashboard.emptyState.subtitle}</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="text-left text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-white/5">
-                  <th className="px-6 py-5">{t.transactions.table.date}</th>
-                  <th className="px-6 py-5">{t.transactions.table.desc}</th>
-                  <th className="px-6 py-5">{t.transactions.table.category}</th>
-                  <th className="px-6 py-5 text-right">{t.transactions.table.amount}</th>
-                  <th className="px-6 py-5 text-right">{t.transactions.table.actions}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {filteredTransactions.map((tx) => {
-                  const styles = getCategoryStyles(tx.category);
-                  const Icon = styles.icon;
-                  const date = new Date(tx.date);
-                  
-                  return (
-                    <tr key={tx.id} className="group hover:bg-white/5 transition-colors">
-                      <td className="px-6 py-5 text-gray-300 whitespace-nowrap">
-                        <div className="flex flex-col">
-                          <span className="flex items-center gap-1.5 text-sm font-medium">
-                            <Calendar size={14} className="text-gray-500" />
-                            {date.toLocaleDateString(settings.language === 'id' ? 'id-ID' : 'en-US', { weekday: 'long', day: 'numeric', month: 'short' })}
-                          </span>
-                          <span className="flex items-center gap-1.5 text-xs text-gray-500 mt-1">
-                            <Clock size={14} />
-                            {date.toLocaleTimeString(settings.language === 'id' ? 'id-ID' : 'en-US', { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-5">
-                        <div className="flex items-center gap-4">
-                          <div className={cn("w-10 h-10 rounded-full flex items-center justify-center", styles.bg, styles.text)}>
-                            <Icon size={20} />
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-left text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-white/5">
+                    <th className="px-6 py-5">{t.transactions.table.date}</th>
+                    <th className="px-6 py-5">{t.transactions.table.desc}</th>
+                    <th className="px-6 py-5">{t.transactions.table.category}</th>
+                    <th className="px-6 py-5 text-right">{t.transactions.table.amount}</th>
+                    <th className="px-6 py-5 text-right">{t.transactions.table.actions}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {filteredTransactions.map((tx) => {
+                    const styles = getCategoryStyles(tx.category);
+                    const Icon = styles.icon;
+                    const date = new Date(tx.date);
+                    
+                    return (
+                      <tr key={tx.id} className="group hover:bg-white/5 transition-colors">
+                        <td className="px-6 py-5 text-gray-300 whitespace-nowrap">
+                          <div className="flex flex-col">
+                            <span className="flex items-center gap-1.5 text-sm font-medium">
+                              <Calendar size={14} className="text-gray-500" />
+                              {date.toLocaleDateString(settings.language === 'id' ? 'id-ID' : 'en-US', { weekday: 'long', day: 'numeric', month: 'short' })}
+                            </span>
+                            <span className="flex items-center gap-1.5 text-xs text-gray-500 mt-1">
+                              <Clock size={14} />
+                              {date.toLocaleTimeString(settings.language === 'id' ? 'id-ID' : 'en-US', { hour: '2-digit', minute: '2-digit' })}
+                            </span>
                           </div>
-                          <span className="font-semibold text-white">{tx.name}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-5">
-                        <span className={cn("px-3 py-1 rounded-full text-xs font-medium border", styles.text, styles.bg, styles.border)}>
-                          {getTranslatedCategory(tx.category, settings.language)}
+                        </td>
+                        <td className="px-6 py-5">
+                          <div className="flex items-center gap-4">
+                            <div className={cn("w-10 h-10 rounded-full flex items-center justify-center", styles.bg, styles.text)}>
+                              <Icon size={20} />
+                            </div>
+                            <span className="font-semibold text-white">{tx.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-5">
+                          <span className={cn("px-3 py-1 rounded-full text-xs font-medium border", styles.text, styles.bg, styles.border)}>
+                            {getTranslatedCategory(tx.category, settings.language)}
+                          </span>
+                        </td>
+                        <td className={cn("px-6 py-5 text-right font-semibold whitespace-nowrap", 
+                          tx.type === 'income' ? "text-green-400" : "text-red-400"
+                        )}>
+                          {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
+                        </td>
+                        <td className="px-6 py-5 text-right">
+                          <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button 
+                              onClick={() => handleEdit(tx)}
+                              className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            <button 
+                              onClick={() => {
+                                if (confirm(settings.language === 'id' ? 'Hapus transaksi ini?' : 'Delete this transaction?')) {
+                                  deleteTransaction(tx.id);
+                                }
+                              }}
+                              className="p-2 hover:bg-red-500/20 rounded-lg text-gray-400 hover:text-red-400 transition-colors"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card List View */}
+            <div className="md:hidden flex flex-col divide-y divide-white/5">
+              {filteredTransactions.map((tx) => {
+                const styles = getCategoryStyles(tx.category);
+                const Icon = styles.icon;
+                const date = new Date(tx.date);
+                
+                return (
+                  <div key={tx.id} className="p-4 flex items-center justify-between hover:bg-white/5 active:bg-white/5 transition-colors">
+                    <div className="flex items-center gap-3 overflow-hidden">
+                      <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0", styles.bg, styles.text)}>
+                        <Icon size={18} />
+                      </div>
+                      <div className="flex flex-col overflow-hidden min-w-0">
+                        <span className="font-semibold text-white text-sm truncate">{tx.name}</span>
+                        <span className="text-xs text-gray-400 flex items-center gap-1">
+                          {getTranslatedCategory(tx.category, settings.language)} • {date.toLocaleDateString(settings.language === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short' })}
                         </span>
-                      </td>
-                      <td className={cn("px-6 py-5 text-right font-semibold whitespace-nowrap", 
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 shrink-0 ml-2">
+                      <span className={cn("font-bold text-sm whitespace-nowrap", 
                         tx.type === 'income' ? "text-green-400" : "text-red-400"
                       )}>
-                        {tx.type === 'income' ? '+' : '-'}
-                        {formatCurrency(tx.amount)}
-                      </td>
-                      <td className="px-6 py-5 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button 
+                        {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
+                      </span>
+                      <div className="flex gap-2">
+                         <button 
                             onClick={() => handleEdit(tx)}
-                            className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
+                            className="p-1.5 bg-white/5 rounded-lg text-gray-400"
                           >
-                            <Edit size={18} />
+                            <Edit size={14} />
                           </button>
                           <button 
-                            onClick={() => deleteTransaction(tx.id)}
-                            className="p-2 hover:bg-red-500/20 rounded-lg text-gray-400 hover:text-red-400 transition-colors"
+                            onClick={() => {
+                              if (confirm(settings.language === 'id' ? 'Hapus transaksi ini?' : 'Delete this transaction?')) {
+                                deleteTransaction(tx.id);
+                              }
+                            }}
+                            className="p-1.5 bg-red-500/10 rounded-lg text-red-400"
                           >
-                            <Trash2 size={18} />
+                            <Trash2 size={14} />
                           </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
 
         {/* Pagination */}
@@ -507,11 +563,11 @@ export default function Transactions() {
                       ))}
                       
                       {/* Show "Create New" if it doesn't exist */}
-                  {!availableCategories.some(c => c.toLowerCase() === formData.category.toLowerCase()) && (
-                    <div className="px-4 py-3 text-sm text-gray-500 italic border-t border-white/5">
-                      {t.dashboard.modal.newCategoryHint.replace('{category}', formData.category)}
-                    </div>
-                  )}
+                      {!availableCategories.some(c => c.toLowerCase() === formData.category.toLowerCase()) && (
+                        <div className="px-4 py-3 text-sm text-gray-500 italic border-t border-white/5">
+                          {t.dashboard.modal.newCategoryHint.replace('{category}', formData.category)}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -539,18 +595,24 @@ export default function Transactions() {
                     setIsDateManuallyEdited(true);
                   }}
                   className="w-full bg-black/20 border border-white/5 rounded-xl py-2 px-4 text-white focus:outline-none focus:border-primary/50 [color-scheme:dark]"
-                  required
                 />
               </div>
 
-              <button 
-                type="submit"
-                className="w-full py-3 bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity rounded-xl font-semibold mt-2"
-              >
-                {editingId 
-                  ? t.transactions.saveChanges 
-                  : t.dashboard.modal.save}
-              </button>
+              <div className="pt-4 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-1 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl font-semibold transition-colors"
+                >
+                  {t.common.cancel}
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-3 bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white rounded-xl font-semibold transition-opacity shadow-lg shadow-primary/20"
+                >
+                  {t.dashboard.modal.save}
+                </button>
+              </div>
             </form>
           </div>
         </div>

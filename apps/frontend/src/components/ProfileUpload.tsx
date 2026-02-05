@@ -51,7 +51,7 @@ export default function ProfileUpload() {
       });
       reader.readAsDataURL(file);
     }
-  }, []);
+  }, [t.profile.errorSize, t.profile.errorRes]);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
