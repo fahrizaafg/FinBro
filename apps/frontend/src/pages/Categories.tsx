@@ -10,7 +10,6 @@ import {
   Receipt,
   Search,
   Ghost,
-  Info,
   X,
   Lightbulb,
   Zap,
